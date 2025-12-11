@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FC Mileszki</title>
+  <style>
+    :root{
+      --accent:#d00000;
+      --dark:#111;
+      --light:#fafafa;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background: repeating-linear-gradient(45deg, var(--accent), var(--accent) 20px, #000 20px, #000 40px);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    @media (max-width: 880px){
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    .crest {
+      display: block;
+      max-width: 160px;
+      margin: 8px auto 0;
+    }
+
+    h2 { margin: 0 0 12px 0; font-size: 1.05rem; }
+
+    .players {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .player {
+      background: var(--light);
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
+      border: 2px solid transparent;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .player:hover {
+      background: linear-gradient(135deg, #ff4d4d, #b00000);
+      color: white;
+      transform: scale(1.06);
+      box-shadow: 0 6px 20px rgba(208,0,0,0.18);
+    }
+
+    .player.active {
+      border: 2px solid var(--accent);
+      background: #ffecef;
+      transform: scale(1.06);
+    }
+
+    #player-info {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fbfbfb;
+      transition: opacity 0.3s ease;
+    }
+
+    .matches {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f6f6f6;
+      border: 1px solid #e6e6e6;
+    }
+
+    .match-row {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .match-team {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:700;
+    }
+
+    .match-team.right img {
+      order: 1;
+      margin-left:8px;
+      margin-right:0;
+    }
+
+    .match-team.right span {
+      order: 0;
+    }
+
+    .match-team img {
+      width:48px;
+      height:48px;
+      object-fit:contain;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat-tile {
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #eee;
+      font-weight:700;
+      box-shadow: 0 0 6px rgba(0,0,0,0.04);
+    }
+
+    .sidebar { display:flex; flex-direction:column; gap:12px; position:relative; }
+    .news-card { background: white; padding: 14px; border-radius: 8px; border: 1px solid #e6e6e6; box-shadow: 0 0 8px rgba(0,0,0,0.04); }
+    .news-card h4 { margin:0 0 8px 0; font-size: 0.95rem; }
+    .news-card p { margin:0; font-size: 0.9rem; }
+    .news-badge { display:inline-block; padding:6px 8px; border-radius:6px; background:var(--accent); color:white; font-weight:700; font-size:0.8rem; margin-left:8px; }
+    .muted { color:#666; font-size:0.95rem; }
+  </style>
+</head>
+<body>
+  <header>FC Mileszki</header>
+
+  <div class="container">
+    <div class="layout">
+      <div>
+        <div class="card">
+          <h2>Herb Klubu</h2>
+          <img id="club-crest" class="crest" src="herb_fc_mileszki.png" alt="Herb FC Mileszki" title="Herb FC Mileszki" />
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <h2>Zawodnicy</h2>
+          <div class="players" id="players-list">
+            <div class="player">Priada — BR — nr 1</div>
+            <div class="player">Gimpaldinho — PS — nr 10</div>
+            <div class="player">Benieta — N — nr 9</div>
+            <div class="player">Kozeł — ŚP — nr 7</div>
+            <div class="player">Digo — ŚO — nr 13</div>
+            <div class="player">Włodi — ŚO — nr 16</div>
+          </div>
+          <div id="player-info">
+            <p>Kliknij zawodnika, aby zobaczyć szczegóły (gole/asysty: 0).</p>
+          </div>
+        </div>
+
+        <div class="card matches" style="margin-top:14px;">
+          <h2>Mecze</h2>
+          <div class="match-row">
+            <div class="match-team" data-team="FC Mileszki"></div>
+            <div>vs</div>
+            <div class="match-team right" data-team="WKS Mileszki"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <h2>Statystyki Klubu - Sezon 25/26</h2>
+          <div class="stat-grid" id="club-stats">
+            <div class="stat-tile">Mecze (M)<br><span id="club-M">0</span></div>
+            <div class="stat-tile">Gole (G)<br><span id="club-G">0</span></div>
+            <div class="stat-tile">Asysty (A)<br><span id="club-A">0</span></div>
+            <div class="stat-tile">Przegrane<br><span id="club-L">0</span></div>
+            <div class="stat-tile">Wygrane<br><span id="club-W">0</span></div>
+            <div class="stat-tile">Bilans Bramkowy<br><span id="club-B">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="news-card card">
+          <h4>Aktualności <span class="news-badge">Nowo</span></h4>
+          <p><strong>Mecz:</strong> FC Mileszki - WKS Mileszki</p>
+          <p class="muted" style="margin-top:8px;">Data: wkrótce • Lokalizacja: boisko główne</p>
+        </div>
+
+        <div class="news-card card">
+          <h4>Nowy zawodnik</h4>
+          <p><strong>Priada — BR — nr 1</strong></p>
+          <p class="muted" style="margin-top:8px;">Bardzo dobry bramkarz, potyka się o własne ręce, ale nadrabia wysoką inteligencją na boisku.</p>
+        </div>
+
+        <!-- placeholder for future news -->
+        <div class="news-card card">
+          <h4>Nadchodzące</h4>
+          <p class="muted">Tutaj będą kolejne aktualizacje — nowi zawodnicy, transfery, wyniki.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const players = {
+      'Priada': { pozycja:'BR', numer:1, opis:'Bardzo dobry bramkarz, potyka się o własne ręce, ale nadrabia wysoką inteligencją na boisku.', goals:0, assists:0 },
+      'Gimpaldinho': { pozycja:'PS', numer:10, opis:'Dobrze drybluje i podaje. Najlepsze panowanie nad piłką w drużynie.', goals:0, assists:0 },
+      'Benieta': { pozycja:'N', numer:9, opis:'Świetnie rozprowadza piłkę. Umie współpracować z zawodnikami na boisku.', goals:0, assists:0 },
+      'Kozeł': { pozycja:'ŚP', numer:7, opis:'Rozprowadza szybkie i celne podania. Dobrze radzi sobie w defensywie.', goals:0, assists:0 },
+      'Digo': { pozycja:'ŚO', numer:13, opis:'Walczy o piłkę do końca. Potyka się o własne nogi.', goals:0, assists:0 },
+      'Włodi': { pozycja:'ŚO', numer:16, opis:'Bardzo wszechstronny zawodnik, dobrze radzi sobie na różnych pozycjach. Dobrze się rzuca.', goals:0, assists:0 }
+    };
+
+    const playerElements = document.querySelectorAll('.player');
+    const playerInfo = document.getElementById('player-info');
+
+    playerElements.forEach(p => {
+      p.addEventListener('click', () => {
+        playerElements.forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        const name = p.textContent.split(' — ')[0].trim();
+        const info = players[name];
+        if(info){
+          playerInfo.innerHTML = `
+            <h3>${name}</h3>
+            <p><strong>Pozycja:</strong> ${info.pozycja}</p>
+            <p><strong>Numer:</strong> ${info.numer}</p>
+            <p style="margin-top:8px;">${info.opis}</p>
+            <div style="margin-top:12px; display:flex; gap:12px;">
+              <div style="padding:8px; background:#fff; border-radius:6px; border:1px solid #eee; min-width:90px; text-align:center;">
+                <div style="font-size:0.85rem; color:#666;">Gole</div>
+                <div style="font-weight:700; font-size:1.1rem;">${info.goals}</div>
+              </div>
+              <div style="padding:8px; background:#fff; border-radius:6px; border:1px solid #eee; min-width:90px; text-align:center;">
+                <div style="font-size:0.85rem; color:#666;">Asysty</div>
+                <div style="font-weight:700; font-size:1.1rem;">${info.assists}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          playerInfo.innerHTML = '<p>Brak informacji o zawodniku.</p>';
+        }
+      });
+    });
+
+    if(document.querySelector('.player')) document.querySelector('.player').click();
+
+    const crests = {
+      "FC Mileszki": "herb_fc_mileszki.png",
+      "WKS Mileszki": "herb_wks_mileszki.png"
+    };
+
+    document.querySelectorAll('.match-team').forEach(el => {
+      const name = el.dataset.team;
+      const img = document.createElement('img');
+      img.src = crests[name];
+      img.alt = name;
+      const span = document.createElement('span');
+      span.textContent = name;
+      if(el.classList.contains('right')){
+        el.appendChild(span);
+        el.appendChild(img);
+      } else {
+        el.appendChild(img);
+        el.appendChild(span);
+      }
+    });
+  </script>
+</body>
+</html>
